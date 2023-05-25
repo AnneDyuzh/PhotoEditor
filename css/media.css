@@ -1,0 +1,43 @@
+@media (max-width: 1600px){
+    .main_text{
+    max-height: 40%;
+    max-width: 95%;
+    }
+}
+
+@media (max-width: 1400px) {
+.text-box1 {
+        font-size: 14px;
+    }
+.text-box2 {
+    font-size: 15px;
+}
+.main_text {
+    max-height: 38%;
+}
+.arrow{
+    margin-left: -130px;
+}
+}
+
+@media (max-width: 1200px) {
+    .text-box1 {
+        font-size: 12px;
+    }
+    .text-box2 {
+        font-size: 14px;
+    }
+    .main_text {
+        align-items: center;
+    }
+        .main_text {
+            min-height: 35%;
+        }
+    .btn{
+        font-size: 13px;
+        padding: 10px 20px;
+    }
+    .arrow {
+        margin-left: -140px;
+    }
+}

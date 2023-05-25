@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Photo Laboratory</title>
+    <link rel="icon" href="img/icon.png">
+    <link rel="stylesheet" href="libs/css/bootstrap.min.css">
+    <link rel="stylesheet" href="libs/css/jquery.Jcrop.css">
+    <link rel="stylesheet" href="css/stylesheet.css">
+    <link rel="stylesheet" href="css/media.css">
+    <script src="libs/js/jquery-2.1.3.min.js"></script>
+    <script src="libs/js/caman.full.min.js"></script>
+    <script src="libs/js/jquery.slim.min.js"></script>
+    <script src="libs/js/popper.min.js"></script>
+    <script src="libs/js/bootstrap.min.js"></script>
+    <script src="libs/js/jquery.Jcrop.js"></script>
+</head>
+
+<body>
+
+<!--Модальное окно "Редактор изображений"-->
+<div class="modal fade bd-example-modal-lg" id="EditorModal" tabindex="-1" role="dialog" aria-labelledby="EditorModal"
+    aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content pb-0 mb-0">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle">Редактор изображений</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body pt-4">
+                <div class="row mb-0 pb-0">
+                    <div class="col-10 text-center">
+                        <div class="preview-wrapper justify-content-center">
+                            <canvas id="canvas"></canvas>
+                        </div>
+                    </div>
+                    <div class="image-buttons pt-5 pl-4 pb-3 col-2">
+                        <div class="row pt-3">
+                            <button class="buttons" data-toggle="tooltip" 
+                            data-placement="right" title="Повернуть изображение" id="rotation-btn">
+                                <img width="70" class="pt-1" height="37" src="img/rotate.svg">
+                            </button>
+                        </div>
+                        <div class="row pt-3">
+                            <button class="buttons" data-toggle="tooltip" 
+                            data-placement="right" title="Удалить изображение"id="remove-btn">
+                                <img width="70" class="mt-1 mb-1" height="30" src="img/delete.svg">
+                            </button>
+                        </div>
+                        <div class="row pt-3">
+                            <button class="buttons" data-toggle="tooltip" 
+                            data-placement="right" title="Обрезать изображение" id="crop-btn">
+                                <img width="70" class="pt-1 pb-1 pl-1 pr-1" height="35" src="img/crop.svg">
+                            </button>
+                        </div>
+                        <div class="row d-flex">
+                            <button class="buttons" data-toggle="tooltip" 
+                            data-placement="right" title="Применить обрезку" id="crop-btn2" disabled>
+                                <img width="28" class="pt-1 pb-1 pl-1 pr-1" height="30" src="img/save.svg">
+                            </button>
+                            <button class="buttons" data-toggle="tooltip" 
+                            data-placement="right" title="Убрать рамку кадрирования" id="crop-btn3" disabled>
+                                <img width="28" class="pt-1 pb-1 pl-1 pr-1" height="30" src="img/cancel.svg">
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="row filter-buttons pl-3 pt-0 mt-2 d-flex">
+                    <div class="filter-group">
+                        <button id="brightness-dec">-</button>
+                        <span class="filter-name short">Яркость</span>
+                        <button id="brightness-inc">+</button>
+                    </div>
+                    <div class="filter-group ml-1">
+                        <button id="contrast-dec">-</button>
+                        <span class="filter-name short">Контраст</span>
+                        <button id="contrast-inc">+</button>
+                    </div>
+                    <div class="filter-group ml-1 ">
+                        <button id="saturation-dec">-</button>
+                        <span class="filter-name long">Насыщенность</span>
+                        <button id="saturation-inc">+</button>
+                    </div>
+                    <div class="filter-group ml-1">
+                        <button id="exposure-dec">-</button>
+                        <span class="filter-name">Экспозиция</span>
+                        <button id="exposure-inc">+</button>
+                    </div>
+                </div>
+                <div class="row editor-buttons pt-2 mb-2 pl-3 d-flex">
+                    <div class="pl-3 pt-3 text_filtrs">
+                        <span>Фильтры</span>
+                    </div>
+                    <button class="ml-4" id="vintage-btn">Vintage</button>
+                    <button class="ml-4" id="lomo-btn">Lomo</button>
+                    <button class="ml-4" id="pinhole-btn">Pinhole</button>
+                    <button class="ml-4" id="nostalgia-btn">Nostalgia</button>
+                    <button class="ml-4" id="majestic-btn">Her Majesty</button>
+                </div>
+                
+            </div>
+            <div class="modal-footer justify-content-center">
+                <button class="btn_save mr-5" id="download-btn">Скачать готовое изображение</button>
+                <input type="file" class="ml-3" id="upload-file" placeholder="Загрузить новое изображение" />
+                <label for="upload-file">Загрузить изображение</label>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--Шапка сайта-->
+<header class="container-fluid border-bottom header_content">
+    <div class="row justify-content-start">
+        <a href="index.html">
+                <img class="col-xl-8 col-md-6 logo pl-4 pt-2 pb-1" src="img/logoeng.png">
+        </a>
+    </div>
+</header>
+
+<!--Главный контент-->
+<div class="container-fluid pb-5 pt-5 pl-5 pr-5">
+    <div class="row main_content d-flex">
+        <div id="carousel" class="carousel slide pt-2 pb-4 pl-3 col-8" data-ride="carousel">
+            <div class="carousel-inner">
+                <div class="carousel-item text-center pt-5 mt-5 active">
+                    <img class="img-carousel pr-3" src="img/img01.jpg">
+                </div>
+                <div class="carousel-item text-center pt-4">
+                    <img class="img-carousel" src="img/img03.jpg">
+                </div>
+                <div class="carousel-item text-center pt-4">
+                    <img class="img-carousel" src="img/img02.jpg">
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-4">
+            <div class="main_text pt-4 mt-5 pb-lg-0 pb-xl-5">
+                <div class="row text-box1 pb-3 pr-4">Обрезать или же повернуть изображение, применить фильтры, изменить
+                    насыщенность или же яркость. Всё это и многое другое
+                    возможно с помощью фоторедактора "Photo Laboratory"
+                </div>
+                <div class="row text-box2 pb-3 pr-4">Быстро, просто и без потери качества</div>
+            </div>
+            <img class="col-xl-7 arrow" src="img/Gr.svg">
+            <div class="tub pl-lg-3 pt-4 pr-3">
+                <button type="button" class="btn" data-toggle="modal" 
+                data-target="#EditorModal">Начать редактирование изображений</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--Скрипты-->
+<script src="js/main.js"></script>
+<script>
+    $('#myModal').on('shown.bs.modal', function () {
+            $('#myInput').trigger('focus')
+        })
+</script>
+</body>
